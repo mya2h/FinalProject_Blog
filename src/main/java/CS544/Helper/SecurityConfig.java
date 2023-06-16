@@ -1,4 +1,4 @@
-package CS544;
+package CS544.Helper;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;

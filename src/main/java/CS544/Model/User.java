@@ -76,4 +76,5 @@ public class User {
     public LocalDate getLocalDate() {
         return localDate;
     }
+
 }
