@@ -1,0 +1,1 @@
+INSERT INTO USER VALUES(NULL,"John","Doe","john123","1234");
