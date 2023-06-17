@@ -14,7 +14,7 @@ public class CommentService {
     public void add(Comment comment){
         commentDao.save(comment);
     }
-    public void edit(Comment comment){
+    public void update(Comment comment){
         commentDao.save(comment);
     }
     public void delete(long id){
