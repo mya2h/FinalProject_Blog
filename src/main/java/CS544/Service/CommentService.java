@@ -30,9 +30,9 @@ public class CommentService {
     public void delete(long id){
         commentDao.deleteById(id);
     }
-//    public Comment get(long id){
-//       return commentDao.findById(id).get();
-//    }
+    public Comment get(long id){
+       return commentDao.findById(id).get();
+    }
     public List<Comment> getByPost(Post post){
         return commentDao.getByPost(post);
 

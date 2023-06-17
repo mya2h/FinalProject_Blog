@@ -61,10 +61,12 @@ public class CommentController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> update(@RequestBody Comment comment,BindingResult result,@PathVariable Long id ) {
+        Comment comment1 = commentService.get(id);
+        comment1.setDescription(comment.getDescription());
 
-        if (id != comment.getId()) {
-            throw new IllegalArgumentException();
-        }
+//        if (id != comment.getId()) {
+//            throw new IllegalArgumentException();
+//        }
         if (result.hasErrors()) {
             // Handle validation errors
             List<String> errors = result.getAllErrors().stream()
@@ -73,8 +75,8 @@ public class CommentController {
 
             return ResponseEntity.badRequest().body(errors);
         }
-        commentService.update(comment);
-        return ResponseEntity.ok(comment);
+        commentService.update(comment1);
+        return ResponseEntity.ok(comment1);
     }
 
     @DeleteMapping(value = "/delete/{id}")
