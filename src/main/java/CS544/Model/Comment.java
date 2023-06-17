@@ -1,6 +1,7 @@
 package CS544.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,25 +22,27 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
+    @NotBlank(message = "description must not be blank")
     @Size(max=1000)
     private String description;
 
-    @NotNull
+    //@NotNull(message = "user must not be null")
     @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name="comment_author")
+    @Valid
     private User author;
 
-    @NotNull
+   // @NotNull(message = "post must not be null")
     @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "comment_post")
+    @Valid
     private Post post;
     private final LocalDate date = LocalDate.now();
-    @AssertTrue(message = "Invalid Comment")
-    public boolean isValidComment(){
-        if(description==null||description.trim().isEmpty()){return false;}
-        if(author==null){return false;}
-        if(post==null){return false;}
-        return true;
-    }
+//    @AssertTrue(message = "Invalid Comment")
+//    public boolean isValidComment(){
+//        if(description==null||description.trim().isEmpty()){return false;}
+//        if(author==null){return false;}
+//        if(post==null){return false;}
+//        return true;
+//    }
 }
