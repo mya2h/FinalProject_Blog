@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
+
 //@Setter
 //@Getter
 //@NoArgsConstructor
@@ -35,6 +37,9 @@ public class User {
     public User() {
 
     }
+
+//    public <T> User(String username, String s, List<T> ts) {
+//    }
 
     public Long getId() {
         return id;

@@ -2,6 +2,7 @@ package CS544.Service;
 
 import CS544.Dao.IUserDao;
 import CS544.Helper.JWTUtil;
+import CS544.Helper.LoginRequest;
 import CS544.Model.User;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,14 @@ public class UserService {
     public User findOne(long id){
         return userDao.findById(id).get();
     }
-    public Boolean isAuthenticated(JWTUtil.LoginRequest user){
+    public Boolean isAuthenticated(LoginRequest user){
        User loggedInUser = userDao.findByUserName(user.getUserName());
        if(loggedInUser.getPassword().equals(user.getPassword())){
            return true;
        }
        return false;
     }
-
+   public User findByUserName(String username){
+        return userDao.findByUserName(username);
+   }
 }
