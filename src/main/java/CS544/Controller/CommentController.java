@@ -18,28 +18,30 @@ public class CommentController {
     @PostMapping(value = "/add", consumes = "application/json")
     public ResponseEntity<Comment> add(@RequestBody Comment comment) {
         commentService.add(comment);
-        return ResponseEntity.ok(comment);
+        return ResponseEntity.status(HttpStatus.CREATED).body(comment);
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Comment> get(@PathVariable Long id) {
         Comment comment= commentService.get(id);
-        return ResponseEntity.status(HttpStatus.CREATED).body(comment);
+        return ResponseEntity.ok(comment);
     }
 
-    @PutMapping("/add/{id}")
-    public void update(@RequestBody Comment comment,@PathVariable Long id ) {
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Comment> update(@RequestBody Comment comment,@PathVariable Long id ) {
 
         if (id != comment.getId()) {
             throw new IllegalArgumentException();
         }
 
         commentService.update(comment);
+        return ResponseEntity.ok(comment);
     }
 
-    @DeleteMapping(value = "/{id}")
-    public void delete(@PathVariable Long id) {
+    @DeleteMapping(value = "/delete/{id}")
+    public ResponseEntity<Comment> delete(@PathVariable Long id) {
         commentService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
 
