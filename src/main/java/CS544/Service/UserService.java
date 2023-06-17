@@ -26,6 +26,12 @@ public class UserService {
        }
        return false;
     }
+    public Boolean isExistsUserName(String username){
+        if(userDao.findByUserName(username)!=null){
+            return true;
+        };
+        return false;
+    }
    public User findByUserName(String username){
         return userDao.findByUserName(username);
    }
