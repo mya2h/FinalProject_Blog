@@ -24,8 +24,8 @@ public class PostService {
     public void update(Post post){
         iPostDao.save(post);
     }
-    public void delete(Post post){
-        iPostDao.delete(post);
+    public void delete(Long id){
+        iPostDao.deleteById(id);
     }
 
 
