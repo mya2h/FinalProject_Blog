@@ -24,13 +24,11 @@ public class Reaction {
     private Boolean reacted;
 
     @ManyToOne (cascade = CascadeType.PERSIST)
-    @NotNull
     @Valid
     private User reactor;
 
     @ManyToOne (cascade = CascadeType.PERSIST)
     @JoinColumn(name = "reaction_post")
-    @NotNull
     @Valid
     private Post post;
 
