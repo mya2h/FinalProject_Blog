@@ -10,9 +10,8 @@ import java.util.Date;
 
 @Component
 public class JWTUtil {
-    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 24 hours
+    private static final String SECRET_KEY = "jOfj0dc1JGPpTE/1O4JQDBdonFDeAFiYMFh+P1z6FuI=";
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
 
     public String generateToken(String username) {
         Date now = new Date();
@@ -22,10 +21,9 @@ public class JWTUtil {
                 .setSubject(username)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
-                .signWith(SECRET_KEY)
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
-
     public String extractUsername(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)
