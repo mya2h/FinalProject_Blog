@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +19,12 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
-    @PostMapping(value = "/add", consumes = "application/json")
+    @PostMapping(value = "/add/postId/authorId", consumes = "application/json")
     public ResponseEntity<Comment> add(@Valid @RequestBody Comment comment) {
+       // User user = userService
+        //POST POST
+//        comment.setPost();
+//        comment.setAuthor();
         commentService.add(comment);
         return ResponseEntity.status(HttpStatus.CREATED).body(comment);
     }
