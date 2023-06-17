@@ -38,11 +38,5 @@ public class Comment {
     @Valid
     private Post post;
     private final LocalDate date = LocalDate.now();
-//    @AssertTrue(message = "Invalid Comment")
-//    public boolean isValidComment(){
-//        if(description==null||description.trim().isEmpty()){return false;}
-//        if(author==null){return false;}
-//        if(post==null){return false;}
-//        return true;
-//    }
+
 }

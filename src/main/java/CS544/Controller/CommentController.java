@@ -27,6 +27,10 @@ public class CommentController {
     PostService postService;
     @Autowired
     private CommentService commentService;
+    @GetMapping("/")
+    public List<Comment> getAll(){
+        return  commentService.getAll();
+    }
 
     @PostMapping(value = "/add/{postId}/{authorId}", consumes = "application/json")
     public ResponseEntity<?> add(@Valid @RequestBody Comment comment, BindingResult result, @PathVariable Long postId, @PathVariable Long authorId) {
@@ -49,9 +53,9 @@ public class CommentController {
     }
 
     @GetMapping(value = "/{postId}", produces = "application/json")
-    public ResponseEntity<Comment> get(@PathVariable Long postId) {
+    public ResponseEntity<List<Comment>> get(@PathVariable Long postId) {
         Post post = postService.get(postId);
-        Comment comment= commentService.getByPost(post);
+        List<Comment> comment= commentService.getByPost(post);
         return ResponseEntity.ok(comment);
     }
 

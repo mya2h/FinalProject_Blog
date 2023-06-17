@@ -18,6 +18,9 @@ public class CommentService {
     EntityManager entityManager;
     @Autowired
     private ICommentDao commentDao;
+    public List<Comment> getAll(){
+        return commentDao.findAll();
+    }
     public void add(Comment comment){
         commentDao.save(comment);
     }
@@ -30,11 +33,9 @@ public class CommentService {
 //    public Comment get(long id){
 //       return commentDao.findById(id).get();
 //    }
-    public Comment getByPost(Post post){
-        String query = "SELECT c FROM Comment c WHERE c.post = :post";
-        return entityManager.createQuery(query, Comment.class)
-                .setParameter("post", post)
-                .getSingleResult();
+    public List<Comment> getByPost(Post post){
+        return commentDao.getByPost(post);
+
     }
 
 }
