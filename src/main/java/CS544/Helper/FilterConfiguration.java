@@ -19,6 +19,8 @@ import io.jsonwebtoken.*;
 public class FilterConfiguration extends GenericFilterBean {
     @Autowired
     private UserService userService;
+    @Autowired
+    JWTUtil jwtUtil;
     @Value("${jwt.secret}")
     private String jwtSecret;
     @Override
@@ -43,21 +45,14 @@ public class FilterConfiguration extends GenericFilterBean {
             }
             final String token = authHeader.substring(7);
             try {
-                // Verify and parse the JWT token
-                final Claims claims = Jwts.parser()
-                        .setSigningKey(Base64.getDecoder().decode("jOfj0dc1JGPpTE/1O4JQDBdonFDeAFiYMFh+P1z6FuI="))
-                        .parseClaimsJws(token)
-                        .getBody();
-                // Extract the username from the claims
-                String username = claims.getSubject();
+                String username = jwtUtil.extractUsername(token);
 
-                // Check if the user is registered
                 if (!userService.isExistsUserName(username)) {
                     throw new ServletException("User is not registered");
                 }
-
-                // Proceed with the authenticated request
-                request.setAttribute("claims", claims);
+//
+//
+//                request.setAttribute("claims", claims);
                 filterChain.doFilter(req, res);
             } catch (SignatureException e) {
                 throw new ServletException("Invalid token");

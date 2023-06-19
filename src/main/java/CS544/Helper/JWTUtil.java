@@ -33,6 +33,7 @@ public class JWTUtil {
 
         return claims.getSubject();
     }
+    // Assuming the JWTUtil class has a method to retrieve the stored token version for a user
 
     public boolean validateToken(String token) {
         try {

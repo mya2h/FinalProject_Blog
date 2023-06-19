@@ -1,29 +1,42 @@
 package CS544.Service;
 
 import CS544.Dao.IUserDao;
-import CS544.Helper.JWTUtil;
+import CS544.Helper.ChangePassword;
 import CS544.Helper.LoginRequest;
+import CS544.Helper.UpdateProfileRequest;
 import CS544.Model.User;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 @Service
 @Transactional
 public class UserService {
     @Autowired
     IUserDao userDao;
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     public void addUser(User user){
-        userDao.save(user);
+        if(isExistsUserName(user.getUserName())){
+            throw new IllegalArgumentException("UserName already exists");
+        }
+        else{
+            String password = passwordEncoder.encode(user.getPassword());
+            user.setPassword(password);
+            userDao.save(user);
+        }
     }
     public User findOne(long id){
         return userDao.findById(id).get();
     }
     public Boolean isAuthenticated(LoginRequest user){
        User loggedInUser = userDao.findByUserName(user.getUserName());
-       if(loggedInUser.getPassword().equals(user.getPassword())){
-           return true;
-       }
+        if (loggedInUser != null) {
+            String storedPassword = loggedInUser.getPassword();
+            return passwordEncoder.matches(user.getPassword(), storedPassword);
+        }
        return false;
     }
     public Boolean isExistsUserName(String username){
@@ -32,7 +45,30 @@ public class UserService {
         };
         return false;
     }
+    public void changePassword(ChangePassword changePassword,long userId){
+        User user = userDao.findById(userId).get();
+        if (user != null && changePassword.getPassword().equals(changePassword.getConfirmPassword())) {
+            String password = passwordEncoder.encode(changePassword.getPassword());
+            user.setPassword(password);
+            addUser(user);
+        } else {
+            throw new IllegalArgumentException("Password Mismatch");
+        }
+    }
    public User findByUserName(String username){
         return userDao.findByUserName(username);
    }
+   public void delete(long Id){
+        userDao.deleteById(Id);
+   }
+    public void updateProfile(Long userId, UpdateProfileRequest updateProfileRequest) {
+        User user = userDao.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // Update the profile fields
+        user.setFirstName(updateProfileRequest.getFirstName());
+        user.setLastName(updateProfileRequest.getLastName());
+        user.setUserName(updateProfileRequest.getUserName());
+
+        userDao.save(user);
+    }
 }

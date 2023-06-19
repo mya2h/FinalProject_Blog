@@ -1,10 +1,9 @@
 package CS544.Controller;
 
-import CS544.Helper.JWTUtil;
-import CS544.Helper.LoginRequest;
-import CS544.Helper.Response;
+import CS544.Helper.*;
 import CS544.Model.User;
 import CS544.Service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,7 @@ public class UserController {
        return userService.findOne(id);
     }
     @PostMapping(value = "/add",consumes = "application/json",produces = "application/json")
-    public ResponseEntity<User> register(@RequestBody User user){
+    public ResponseEntity<User> register(@Valid @RequestBody User user){
         userService.addUser(user);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
@@ -33,7 +32,25 @@ public class UserController {
             String token = jwtUtil.generateToken(request.getUserName());
             return new ResponseEntity<>(token,HttpStatus.CREATED);
         }
-//        Response response = new Response(HttpStatus.FORBIDDEN,false,"Username/Password Incorrect")
        return new ResponseEntity<>("Username/Password Incorrect",HttpStatus.FORBIDDEN);
+    }
+    @PutMapping(value = "/changePassword/{userId}",consumes = "application/json")
+    public ResponseEntity<String> changePassword(@PathVariable long userId,@RequestBody ChangePassword changePassword){
+        userService.changePassword(changePassword,userId);
+        return new ResponseEntity<>("Success",HttpStatus.CREATED);
+    }
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<String> updateProfile(
+            @PathVariable Long userId,
+            @RequestBody UpdateProfileRequest updateProfileRequest
+    ) {
+        try {
+            userService.updateProfile(userId, updateProfileRequest);
+            return ResponseEntity.ok("Profile updated successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update profile");
+        }
     }
 }
