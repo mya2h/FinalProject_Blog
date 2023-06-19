@@ -58,12 +58,11 @@ public class UserService {
    public User findByUserName(String username){
         return userDao.findByUserName(username);
    }
-   public void delete(long Id){
-        userDao.deleteById(Id);
+   public void delete(User user){
+        userDao.delete(user);
    }
-    public void updateProfile(Long userId, UpdateProfileRequest updateProfileRequest) {
-        User user = userDao.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-
+    public void updateProfile(String userName, UpdateProfileRequest updateProfileRequest) {
+        User user = userDao.findByUserName(userName);
         // Update the profile fields
         user.setFirstName(updateProfileRequest.getFirstName());
         user.setLastName(updateProfileRequest.getLastName());

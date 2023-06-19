@@ -54,18 +54,32 @@ public class UserController {
         response.setMessage("Password changed successfully");
         return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
-    @PutMapping("/update/{userId}")
-    public ResponseEntity<String> updateProfile(
-            @PathVariable Long userId,
-            @RequestBody UpdateProfileRequest updateProfileRequest
+    @PutMapping(value = "/update")
+    public ResponseEntity<Object> updateProfile(
+            @RequestBody UpdateProfileRequest updateProfileRequest,HttpServletRequest request
+
     ) {
         try {
-            userService.updateProfile(userId, updateProfileRequest);
-            return ResponseEntity.ok("Profile updated successfully");
+            Claims claims = (Claims) request.getAttribute("claims");
+            String userName = claims.getSubject();
+            userService.updateProfile(userName, updateProfileRequest);
+            response.setSuccess(true);
+            response.setMessage("Successfully update user");
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update profile");
         }
+    }
+    @DeleteMapping(value = "/delete")
+    public ResponseEntity<Object> deleteProfile(HttpServletRequest request){
+        Claims claims = (Claims) request.getAttribute("claims");
+        String userName = claims.getSubject();
+        User user = userService.findByUserName(userName);
+        userService.delete(user);
+        response.setSuccess(true);
+        response.setMessage("Successfully deleted profile");
+        return ResponseEntity.ok(response);
     }
 }
