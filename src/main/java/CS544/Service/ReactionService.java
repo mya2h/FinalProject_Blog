@@ -27,11 +27,15 @@ public class ReactionService {
     }
 
     public void updateReaction(Reaction reaction){
-
+        reactionDao.save(reaction);
     }
 
     public List<Reaction> getAllReactions(){
         return reactionDao.findAll();
+    }
+
+    public List<Reaction> getByPostId(Long postId){
+        return reactionDao.getByPostId(postId);
     }
 
 }
