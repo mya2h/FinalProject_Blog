@@ -4,10 +4,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,9 +24,14 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "FirstName is required")
     private String firstName;
+    @NotBlank(message = "LastName is required")
     private String lastName;
+    @NotBlank(message = "Username is required")
     private String userName;
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
     private final LocalDate localDate = LocalDate.now();
 
@@ -37,9 +45,6 @@ public class User {
     public User() {
 
     }
-
-//    public <T> User(String username, String s, List<T> ts) {
-//    }
 
     public Long getId() {
         return id;
