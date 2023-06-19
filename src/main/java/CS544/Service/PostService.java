@@ -26,7 +26,7 @@ public class PostService {
         Post p = iPostDao.getById(id);
         p.setDescription(post.getDescription());
         p.setTitle(post.getTitle());
-        System.out.println(p+ "testing!");
+        System.out.println( "testing!" + p);
         iPostDao.save(p);
         return p;
     }

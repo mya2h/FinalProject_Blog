@@ -50,22 +50,20 @@ public class PostController {
 //        postService.save(post);
 //        return new RedirectView("/post/" + post.getId());
 //    }
-@PostMapping("/add/{userid}")
-public ResponseEntity<?> addPost(@Valid @RequestBody Post post, BindingResult result, HttpServletRequest request {
-    Claims claims = request.getClaims();
-    User user = userService.findOne(userid);
-    if (user == null) {
-        throw new IllegalArgumentException("Invalid user ID");
-    }
+@PostMapping("/add")
+public ResponseEntity<?> addPost(@Valid @RequestBody Post post, BindingResult result, HttpServletRequest request) {
+    Claims claims = (Claims) request.getAttribute("claims");
+    String username = claims.getSubject();
+    User user = userService.findByUserName(username);
 
-    if (result.hasErrors()) {
-        // Handle validation errors
+     if (result.hasErrors()) {
+
         List<String> errors = result.getAllErrors().stream()
                 .map(e -> e.getDefaultMessage())
                 .collect(Collectors.toList());
 
         return ResponseEntity.badRequest().body(errors);
-    } else {
+     } else {
         post.setAuthor(user);
         postService.save(post);
         return ResponseEntity.ok().body(post);
@@ -75,14 +73,16 @@ public ResponseEntity<?> addPost(@Valid @RequestBody Post post, BindingResult re
 
 
 
-    @PutMapping("/add/{postId}/{userId}")
-    public ResponseEntity<?> updatePost(@Valid @RequestBody Post post, BindingResult result, @PathVariable Long userId,
+    @PutMapping("/add/{postId}")
+    public ResponseEntity<?> updatePost(@Valid @RequestBody Post post, BindingResult result, HttpServletRequest request,
             @PathVariable Long postId  ) {
-
-        User user = userService.findOne(userId);
+        Claims claims = (Claims) request.getAttribute("claims");
+        String username = claims.getSubject();
+        User user = userService.findByUserName(username);
         Post p = postService.get(postId);
-        if (user == null || p == null) {
-            throw new IllegalArgumentException("Invalid user ID or post id");
+
+        if ( p == null) {
+            throw new IllegalArgumentException("Invalid post ID");
         }
 
         if (result.hasErrors()) {
@@ -94,9 +94,8 @@ public ResponseEntity<?> addPost(@Valid @RequestBody Post post, BindingResult re
             return ResponseEntity.badRequest().body(errors);
         } else {
 
-           Post updatedp =  postService.update(post, postId);
-            System.out.println(updatedp);
-            return ResponseEntity.ok().body(updatedp);
+           Post updatedPost =  postService.update(post, postId);
+            return ResponseEntity.ok().body(updatedPost);
         }
     }
 
