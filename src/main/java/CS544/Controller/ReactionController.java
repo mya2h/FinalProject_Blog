@@ -42,8 +42,13 @@ public class ReactionController {
         return reactionService.getReaction(id);
     }
 
+    @GetMapping(value = "/getPost/{post_id}", produces = "application/json")
+    public List<Reaction> getPost(@PathVariable long post_id){
+            return reactionService.getByPostId(post_id);
+    }
+
     @PostMapping(value = "/add/user/{user_id}/post/{post_id}")
-    public ResponseEntity<?> addReaction(@Valid @RequestBody Reaction reaction, @PathVariable Long user_id, @PathVariable Long post_id) {
+    public ResponseEntity<Reaction> addReaction(@Valid @RequestBody Reaction reaction, @PathVariable Long user_id, @PathVariable Long post_id) {
 
         User user = userService.findOne(user_id);
         Post post = postService.get(post_id);
@@ -59,7 +64,7 @@ public class ReactionController {
         }
     }
 
-    @PutMapping(value = "/add/{id}")
+    @PutMapping(value = "/update/{id}")
     public void put(@PathVariable long id, @Valid @RequestBody Reaction reaction){
         if (id != reaction.getId()) {
             throw new IllegalArgumentException();

@@ -34,4 +34,8 @@ public class ReactionService {
         return reactionDao.findAll();
     }
 
+    public List<Reaction> getByPostId(Long postId){
+        return reactionDao.getByPostId(postId);
+    }
+
 }
