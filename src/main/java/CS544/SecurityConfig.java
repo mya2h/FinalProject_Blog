@@ -6,7 +6,5 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class})
-
 public class SecurityConfig {
-    // Your custom security configuration comes here
 }
