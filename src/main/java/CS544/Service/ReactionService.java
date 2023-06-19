@@ -27,7 +27,7 @@ public class ReactionService {
     }
 
     public void updateReaction(Reaction reaction){
-
+        reactionDao.save(reaction);
     }
 
     public List<Reaction> getAllReactions(){
