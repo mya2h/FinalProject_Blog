@@ -38,18 +38,7 @@ public class PostController {
         return postService.get(id);
     }
 
-//    @PostMapping("/add")
-//    public RedirectView addPost(@Valid @RequestBody Post post, BindingResult result, RedirectAttributes att){
-//
-//        if(result.hasErrors()){
-//            att.addFlashAttribute("org.springframework.validation.BindingResult.Post", result);
-//            att.addFlashAttribute("post", post);
-//            return RedirectView();
-//
-//        }
-//        postService.save(post);
-//        return new RedirectView("/post/" + post.getId());
-//    }
+
 @PostMapping("/add")
 public ResponseEntity<?> addPost(@Valid @RequestBody Post post, BindingResult result, HttpServletRequest request) {
     Claims claims = (Claims) request.getAttribute("claims");
@@ -69,9 +58,6 @@ public ResponseEntity<?> addPost(@Valid @RequestBody Post post, BindingResult re
         return ResponseEntity.ok().body(post);
     }
 }
-
-
-
 
     @PutMapping("/add/{postId}")
     public ResponseEntity<?> updatePost(@Valid @RequestBody Post post, BindingResult result, HttpServletRequest request,
