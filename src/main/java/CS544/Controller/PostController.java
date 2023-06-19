@@ -1,7 +1,12 @@
 package CS544.Controller;
 
+import CS544.Helper.FilterConfiguration;
 import CS544.Model.Post;
+import CS544.Model.User;
 import CS544.Service.PostService;
+import CS544.Service.UserService;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +26,8 @@ import java.util.stream.Collectors;
 public class PostController {
     @Autowired
     private PostService postService;
+    @Autowired
+    private UserService userService;
     @GetMapping("/")
     public List<Post> getAll(){
       return  postService.getAll();
@@ -44,35 +51,54 @@ public class PostController {
 //        return new RedirectView("/post/" + post.getId());
 //    }
 @PostMapping("/add")
-public ResponseEntity<?> addPost(@Valid @RequestBody Post post, BindingResult result) {
-    if (result.hasErrors()) {
-        // Handle validation errors
+public ResponseEntity<?> addPost(@Valid @RequestBody Post post, BindingResult result, HttpServletRequest request) {
+    Claims claims = (Claims) request.getAttribute("claims");
+    String username = claims.getSubject();
+    User user = userService.findByUserName(username);
+
+     if (result.hasErrors()) {
+
         List<String> errors = result.getAllErrors().stream()
                 .map(e -> e.getDefaultMessage())
                 .collect(Collectors.toList());
 
         return ResponseEntity.badRequest().body(errors);
-    }
-
-   else {
+     } else {
+        post.setAuthor(user);
         postService.save(post);
         return ResponseEntity.ok().body(post);
     }
 }
 
 
-    @PutMapping("/add/{id}")
-    public ResponseEntity update(@Valid @RequestBody Post post, BindingResult result, @PathVariable Long id){
-       if(result.hasErrors()){
-           List<String> errors = result.getAllErrors().stream()
-                   .map(e -> e.getDefaultMessage())
-                   .collect(Collectors.toList());
 
-           return ResponseEntity.badRequest().body(errors);
-       }
-        postService.update(post);
-        return ResponseEntity.ok().body(post);
+
+    @PutMapping("/add/{postId}")
+    public ResponseEntity<?> updatePost(@Valid @RequestBody Post post, BindingResult result, HttpServletRequest request,
+            @PathVariable Long postId  ) {
+        Claims claims = (Claims) request.getAttribute("claims");
+        String username = claims.getSubject();
+        User user = userService.findByUserName(username);
+        Post p = postService.get(postId);
+
+        if ( p == null) {
+            throw new IllegalArgumentException("Invalid post ID");
+        }
+
+        if (result.hasErrors()) {
+
+            List<String> errors = result.getAllErrors().stream()
+                    .map(e -> e.getDefaultMessage())
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.badRequest().body(errors);
+        } else {
+
+           Post updatedPost =  postService.update(post, postId);
+            return ResponseEntity.ok().body(updatedPost);
+        }
     }
+
     @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable Long id){
         postService.delete(id);
