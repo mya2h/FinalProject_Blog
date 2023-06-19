@@ -1,9 +1,9 @@
 package CS544.Service;
 
 import CS544.Dao.IUserDao;
-import CS544.Helper.ChangePassword;
-import CS544.Helper.LoginRequest;
-import CS544.Helper.UpdateProfileRequest;
+import CS544.Dto.ChangePassword;
+import CS544.Dto.LoginRequest;
+import CS544.Dto.UpdateProfileRequest;
 import CS544.Model.User;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,12 +45,12 @@ public class UserService {
         };
         return false;
     }
-    public void changePassword(ChangePassword changePassword,long userId){
-        User user = userDao.findById(userId).get();
+    public void changePassword(ChangePassword changePassword,String userName){
+        User user = userDao.findByUserName(userName);
         if (user != null && changePassword.getPassword().equals(changePassword.getConfirmPassword())) {
             String password = passwordEncoder.encode(changePassword.getPassword());
             user.setPassword(password);
-            addUser(user);
+            userDao.save(user);
         } else {
             throw new IllegalArgumentException("Password Mismatch");
         }

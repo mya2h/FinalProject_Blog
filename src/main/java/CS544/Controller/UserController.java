@@ -1,8 +1,11 @@
 package CS544.Controller;
 
+import CS544.Dto.*;
 import CS544.Helper.*;
 import CS544.Model.User;
 import CS544.Service.UserService;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +19,10 @@ public class UserController {
     @Autowired
     UserService userService;
     @Autowired
+    UserLoginResponse userLoginResponse;
+    @Autowired
+    Response response;
+    @Autowired
     JWTUtil jwtUtil;
     @GetMapping(value = "/{id}",produces = "application/json")
     public User get(@PathVariable long id){
@@ -27,17 +34,25 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
     @PostMapping(value = "/login",consumes = "application/json")
-    public ResponseEntity<String> login(@RequestBody LoginRequest request){
+    public ResponseEntity<Object> login(@RequestBody LoginRequest request){
         if(userService.isAuthenticated(request)){
             String token = jwtUtil.generateToken(request.getUserName());
-            return new ResponseEntity<>(token,HttpStatus.CREATED);
+            userLoginResponse.setSuccess(true);
+            userLoginResponse.setToken(token);
+            return new ResponseEntity<>(userLoginResponse,HttpStatus.CREATED);
         }
-       return new ResponseEntity<>("Username/Password Incorrect",HttpStatus.FORBIDDEN);
+        response.setSuccess(false);
+        response.setMessage("Username/Password Incorrect");
+       return new ResponseEntity<>(response,HttpStatus.FORBIDDEN);
     }
-    @PutMapping(value = "/changePassword/{userId}",consumes = "application/json")
-    public ResponseEntity<String> changePassword(@PathVariable long userId,@RequestBody ChangePassword changePassword){
-        userService.changePassword(changePassword,userId);
-        return new ResponseEntity<>("Success",HttpStatus.CREATED);
+    @PutMapping(value = "/changePassword",consumes = "application/json")
+    public ResponseEntity<Object> changePassword(@RequestBody ChangePassword changePassword,HttpServletRequest request){
+        Claims claims = (Claims) request.getAttribute("claims");
+        String userName = claims.getSubject();
+        userService.changePassword(changePassword,userName);
+        response.setSuccess(true);
+        response.setMessage("Password changed successfully");
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
     @PutMapping("/update/{userId}")
     public ResponseEntity<String> updateProfile(

@@ -1,4 +1,4 @@
-package CS544.Helper;
+package CS544.Dto;
 
 public class LoginRequest {
     private String userName;

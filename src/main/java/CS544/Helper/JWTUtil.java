@@ -35,17 +35,12 @@ public class JWTUtil {
     }
     // Assuming the JWTUtil class has a method to retrieve the stored token version for a user
 
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(SECRET_KEY)
-                    .build()
-                    .parseClaimsJws(token);
+    public Claims getClaims(String token) {
+       return Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(token).getBody();
 
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 
 }

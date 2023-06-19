@@ -50,9 +50,7 @@ public class FilterConfiguration extends GenericFilterBean {
                 if (!userService.isExistsUserName(username)) {
                     throw new ServletException("User is not registered");
                 }
-//
-//
-//                request.setAttribute("claims", claims);
+                request.setAttribute("claims", jwtUtil.getClaims(token));
                 filterChain.doFilter(req, res);
             } catch (SignatureException e) {
                 throw new ServletException("Invalid token");
