@@ -7,7 +7,9 @@ import CS544.Model.User;
 import CS544.Service.PostService;
 import CS544.Service.ReactionService;
 import CS544.Service.UserService;
+import io.jsonwebtoken.Claims;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -47,11 +49,14 @@ public class ReactionController {
             return reactionService.getByPostId(post_id);
     }
 
-    @PostMapping(value = "/add/user/{user_id}/post/{post_id}")
-    public ResponseEntity<Reaction> addReaction(@Valid @RequestBody Reaction reaction, @PathVariable Long user_id, @PathVariable Long post_id) {
+    @PostMapping(value = "/add/post/{post_id}")
+    public ResponseEntity<Reaction> addReaction(@Valid @RequestBody Reaction reaction, HttpServletRequest request, @PathVariable Long post_id) {
 
-        User user = userService.findOne(user_id);
+        Claims claims = (Claims) request.getAttribute("claims");
+        String username = claims.getSubject();
+        User user = userService.findByUserName(username);
         Post post = postService.get(post_id);
+
         if (user == null || post == null) {
             throw new IllegalArgumentException("Invalid User ID or Post ID");
         }
