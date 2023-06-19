@@ -27,13 +27,13 @@ public class Comment {
     private String description;
 
     //@NotNull(message = "user must not be null")
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade={CascadeType.PERSIST,CascadeType.MERGE})
     @JoinColumn(name="comment_author")
     @Valid
     private User author;
 
    // @NotNull(message = "post must not be null")
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade={CascadeType.PERSIST,CascadeType.MERGE})
     @JoinColumn(name = "comment_post")
     @Valid
     private Post post;
