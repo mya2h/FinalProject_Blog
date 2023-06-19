@@ -65,11 +65,11 @@ public class CommentController {
     @PutMapping("/update/{id}")
     public ResponseEntity<?> update(@RequestBody Comment comment,BindingResult result,@PathVariable Long id ) {
         Comment comment1 = commentService.get(id);
+        if(comment1==null){
+            return ResponseEntity.notFound().build();
+        }
         comment1.setDescription(comment.getDescription());
 
-//        if (id != comment.getId()) {
-//            throw new IllegalArgumentException();
-//        }
         if (result.hasErrors()) {
             // Handle validation errors
             List<String> errors = result.getAllErrors().stream()
@@ -83,9 +83,13 @@ public class CommentController {
     }
 
     @DeleteMapping(value = "/delete/{id}")
-    public ResponseEntity<Comment> delete(@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        Comment comment1 = commentService.get(id);
+        if(comment1==null){
+            return ResponseEntity.notFound().build();
+        }
         commentService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("comment deleted successfully");
     }
 }
 
