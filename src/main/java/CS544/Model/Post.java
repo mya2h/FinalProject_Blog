@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Entity
 @Setter
 @Getter
-@AllArgsConstructor
+
 @NoArgsConstructor
 public class Post {
     @Id
@@ -28,8 +28,13 @@ public class Post {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="post_author")
     @Valid
-    @NotNull(message = "User must not be null")
+   // @NotNull(message = "User must not be null")
     private User author;
 
     private final LocalDate date = LocalDate.now();
+
+    public Post(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
 }
