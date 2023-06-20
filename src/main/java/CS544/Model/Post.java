@@ -25,12 +25,10 @@ public class Post {
     @Lob
     @NotBlank(message = "description must not be blank")
     private String description;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name="post_author")
     @Valid
-   // @NotNull(message = "User must not be null")
     private User author;
-
     private final LocalDate date = LocalDate.now();
 
     public Post(String title, String description) {
