@@ -19,8 +19,11 @@ public class PostService {
     public Post get(Long id){
        return iPostDao.findById(id).get();
     }
+    public List<Post> getAllForCurrentUser(User user){
+       return iPostDao.findByAuthor(user);
+    }
     public List<Post> getAll(){
-       return iPostDao.findAll();
+        return iPostDao.findAll();
     }
     public Post  update(Post post, Long id){
         Post p = iPostDao.getById(id);
